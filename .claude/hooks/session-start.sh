@@ -12,6 +12,8 @@ cd "$CLAUDE_PROJECT_DIR"
 uv sync --dev
 
 # Install JS dependencies and copy static assets
+# COREPACK_ENABLE_STRICT=0: remote env may have a different Corepack version than
+# declared in packageManager; suppressed to avoid version mismatch errors.
 COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn install
 
 # Create settings file if not present
