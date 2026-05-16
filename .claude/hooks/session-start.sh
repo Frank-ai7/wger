@@ -20,3 +20,8 @@ COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn install
 if [ ! -f settings.py ]; then
   uv run wger create-settings
 fi
+
+# Export Firecrawl API key if configured
+if [ -n "${FIRECRAWL_API_KEY:-}" ] && [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+  echo "export FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY}" >> "$CLAUDE_ENV_FILE"
+fi
