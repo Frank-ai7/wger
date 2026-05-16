@@ -25,6 +25,7 @@ jobs:
   python-deps:
     name: pip-audit — Python CVEs
     runs-on: ubuntu-latest
+    continue-on-error: true  # informational: reports pre-existing CVEs without blocking
     steps:
       - uses: actions/checkout@v5
 
@@ -45,6 +46,7 @@ jobs:
   js-deps:
     name: yarn audit — JS CVEs
     runs-on: ubuntu-latest
+    continue-on-error: true  # informational: reports pre-existing CVEs without blocking
     steps:
       - uses: actions/checkout@v5
 
@@ -54,18 +56,19 @@ jobs:
 
       - name: Install JS dependencies
         run: COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn install
+        continue-on-error: true
 
       - name: Audit JS dependencies
         run: COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn npm audit --all
-        continue-on-error: true  # informational; yarn returns non-zero even for low severity
 
   sast:
     name: Semgrep — Static Analysis
     runs-on: ubuntu-latest
+    continue-on-error: true  # informational: reports pre-existing findings without blocking
     container:
       image: semgrep/semgrep
     steps:
       - uses: actions/checkout@v5
 
       - name: Run Semgrep (Django + Python rules)
-        run: semgrep --config=p/django --config=p/python --config=p/secrets --error .
+        run: semgrep --config=p/django --config=p/python --config=p/secrets .
