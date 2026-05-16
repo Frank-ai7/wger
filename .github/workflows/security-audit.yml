@@ -1,0 +1,80 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 6 * * 1'  # every Monday 06:00 UTC (catches new CVEs without push)
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Gitleaks — Secret Detection
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # full history required to catch secrets in old commits
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  python-deps:
+    name: pip-audit — Python CVEs
+    runs-on: ubuntu-latest
+    continue-on-error: true  # informational: reports pre-existing CVEs without blocking
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Audit Python dependencies
+        run: uv run --with pip-audit pip-audit
+
+  js-deps:
+    name: yarn audit — JS CVEs
+    runs-on: ubuntu-latest
+    continue-on-error: true  # informational: reports pre-existing CVEs without blocking
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install JS dependencies
+        run: COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn install
+        continue-on-error: true
+
+      - name: Audit JS dependencies
+        run: COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn npm audit --all
+
+  sast:
+    name: Semgrep — Static Analysis
+    runs-on: ubuntu-latest
+    continue-on-error: true  # informational: reports pre-existing findings without blocking
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Run Semgrep (Django + Python rules)
+        run: semgrep --config=p/django --config=p/python --config=p/secrets .
