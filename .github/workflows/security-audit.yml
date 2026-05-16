@@ -107,3 +107,54 @@ jobs:
           name: bandit-security-report
           path: bandit-report.json
           retention-days: 30
+
+  vorcheck:
+    name: Vorcheck — Vollständiger Repo-Scan
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Secrets in Dateien suchen
+        run: |
+          echo "=== Hardcoded Secrets ===" 
+          grep -rn "password\|api_key\|token\|private_key" \
+            --include="*.py" --include="*.js" --include="*.yml" . \
+            | grep -iE "=\s*['\"][a-zA-Z0-9+/]{16,}" \
+            | grep -iv "example\|dummy\|test\|placeholder\|your_" \
+            || echo "Keine gefunden"
+
+      - name: Gefährliche Code-Muster suchen
+        run: |
+          echo "=== Dangerous Patterns ==="
+          grep -rn "eval(\|exec(\|pickle.loads\|os.system\|__import__" \
+            --include="*.py" . | grep -v "test\|#" || echo "Keine gefunden"
+
+      - name: Netzwerk-Exfiltration prüfen
+        run: |
+          echo "=== Network Calls ==="
+          grep -rn "requests.post\|urllib.*post" \
+            --include="*.py" . | grep -v "test\|#" | head -20 || echo "Keine gefunden"
+
+      - name: Bandit Vollscan
+        run: uv run --with bandit bandit -r wger/ -ll -f json -o vorcheck-report.json || true
+
+      - name: Vorcheck-Report speichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: vorcheck-report
+          path: vorcheck-report.json
+          retention-days: 90
