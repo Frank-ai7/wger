@@ -65,6 +65,7 @@ wger/core/static/yarn
 node_modules
 .yarn/cache/
 .yarn/build-state.yml
+.yarn/install-state.gz
 
 # Virtual envs
 .venv
