@@ -79,3 +79,31 @@ jobs:
 
       - name: Run Semgrep (Django + Python rules)
         run: semgrep --config=p/django --config=p/python --config=p/secrets .
+
+  bandit:
+    name: Bandit — Python Security Review
+    runs-on: ubuntu-latest
+    continue-on-error: true  # informational: reports pre-existing findings without blocking
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Run Bandit (medium severity and above)
+        run: uv run --with bandit bandit -r wger/ -ll -f json -o bandit-report.json || true
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-security-report
+          path: bandit-report.json
+          retention-days: 30
