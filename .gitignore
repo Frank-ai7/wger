@@ -67,6 +67,9 @@ node_modules
 .yarn/build-state.yml
 .yarn/install-state.gz
 
+# Local environment secrets (never commit)
+.env
+
 # Virtual envs
 .venv
 venv
