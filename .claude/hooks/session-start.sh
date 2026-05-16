@@ -21,6 +21,15 @@ if [ ! -f settings.py ]; then
   uv run wger create-settings
 fi
 
+# Restore custom skills from repo into global Claude skills directory
+mkdir -p ~/.claude/skills
+for skill_dir in "$CLAUDE_PROJECT_DIR"/.claude/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  if [ ! -d ~/.claude/skills/"$skill_name" ]; then
+    cp -r "$skill_dir" ~/.claude/skills/"$skill_name"
+  fi
+done
+
 # Load secrets from .env and export to session environment
 if [ -f "$CLAUDE_PROJECT_DIR/.env" ] && [ -n "${CLAUDE_ENV_FILE:-}" ]; then
   grep -v '^\s*#' "$CLAUDE_PROJECT_DIR/.env" | grep -v '^\s*$' | while IFS= read -r line; do
