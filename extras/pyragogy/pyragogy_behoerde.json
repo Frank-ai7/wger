@@ -1,0 +1,613 @@
+{
+  "name": "Pyragogy Behörden-Assistent",
+  "nodes": [
+    {
+      "id": "wh-001",
+      "name": "Webhook Eingang",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pyragogy/behoerde",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "pg-001",
+      "name": "DB Verbindung prüfen",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS public.pyragogy_behoerde (\n  id BIGSERIAL PRIMARY KEY,\n  title TEXT NOT NULL,\n  content TEXT,\n  status TEXT DEFAULT 'pending',\n  tags TEXT,\n  iterations INTEGER DEFAULT 0,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\nALTER TABLE public.pyragogy_behoerde DISABLE ROW LEVEL SECURITY;\nSELECT 1 AS connected;"
+      },
+      "credentials": {
+        "postgres": {
+          "id": "pyragogy-supabase",
+          "name": "Pyragogy Supabase DB"
+        }
+      }
+    },
+    {
+      "id": "set-001",
+      "name": "Iteration Zähler Init",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [440, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "iter-count",
+              "name": "iteration",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "title-fwd",
+              "name": "title",
+              "value": "={{ $json.body.title ?? 'Widerspruch' }}",
+              "type": "string"
+            },
+            {
+              "id": "text-fwd",
+              "name": "initial_text",
+              "value": "={{ $json.body.initial_text ?? $json.body.text ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "tags-fwd",
+              "name": "tags",
+              "value": "={{ $json.body.tags ?? 'behoerde,gdb,widerspruch' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "ag-meta",
+      "name": "Meta-Orchestrator Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [660, 300],
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Titel: {{ $json.title }}\nEingabe: {{ $json.initial_text }}\nTags: {{ $json.tags }}\n\nAnalysiere diese Anfrage und bestimme die optimale Reihenfolge der folgenden Agenten:\n1. Sensemaking (Kontextanalyse)\n2. Prompt Engineer (Verbesserung)\n3. Peer Reviewer (Qualitätsprüfung)\n4. Archivist (Finalisierung)\n\nGib eine kurze Strategie aus (max 150 Wörter) und das priorisierte Agenten-Array als JSON:\n{\"strategy\": \"...\", \"agent_sequence\": [\"sensemaking\", \"prompt_engineer\", \"peer_reviewer\", \"archivist\"], \"context\": \"...\"}",
+        "options": {
+          "systemMessage": "Du bist der Meta-Orchestrator des Pyragogy Behörden-Assistenten. Deine Aufgabe ist es, eingehende Anfragen zu analysieren und den optimalen Verarbeitungsweg durch das Multi-Agenten-System zu bestimmen. Spezialisierung: Deutsche Behördenkommunikation (GdB-Anträge, Widerspruchsverfahren, private Krankenversicherung AXA PKV). Antworte immer auf Deutsch. Gib deine Ausgabe als gültiges JSON zurück."
+        }
+      }
+    },
+    {
+      "id": "lm-meta",
+      "name": "Claude Meta-Orchestrator",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [660, 520],
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "options": {
+          "temperature": 0.2,
+          "maxTokens": 1024
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "pyragogy-anthropic",
+          "name": "Pyragogy Anthropic"
+        }
+      }
+    },
+    {
+      "id": "ag-sense",
+      "name": "Sensemaking Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [880, 300],
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Titel: {{ $('Iteration Zähler Init').item.json.title }}\nOriginaltext: {{ $('Iteration Zähler Init').item.json.initial_text }}\nMeta-Strategie: {{ $('Meta-Orchestrator Agent').item.json.output }}\n\nAnalysiere den Text und identifiziere:\n1. Kernargumente und Sachverhalt\n2. Rechtliche Grundlagen (SGB IX, BVG, VVG, GOÄ)\n3. Schwachstellen und Lücken\n4. Verbesserungspotenzial\n\nGib zurück als JSON:\n{\"key_arguments\": [], \"legal_basis\": [], \"weaknesses\": [], \"improvement_areas\": [], \"sensemaking_summary\": \"...\"}",
+        "options": {
+          "systemMessage": "Du bist der Sensemaking Agent des Pyragogy Behörden-Assistenten. Du analysierst Widerspruchsschreiben und Anträge im Bereich deutscher Sozialbehörden. Dein Fokus: GdB-Feststellung (Grad der Behinderung nach SGB IX), Widerspruchsverfahren gegen Behördenbescheide, PKV-Leistungsstreitigkeiten (AXA). Du erkennst Argumentationslücken und rechtliche Schwachstellen. Antworte immer auf Deutsch mit validem JSON."
+        }
+      }
+    },
+    {
+      "id": "lm-sense",
+      "name": "Claude Sensemaking",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [880, 520],
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "options": {
+          "temperature": 0.3,
+          "maxTokens": 2048
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "pyragogy-anthropic",
+          "name": "Pyragogy Anthropic"
+        }
+      }
+    },
+    {
+      "id": "ag-prompt",
+      "name": "Prompt Engineer Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [1100, 300],
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Titel: {{ $('Iteration Zähler Init').item.json.title }}\nOriginaltext: {{ $('Iteration Zähler Init').item.json.initial_text }}\nSensemaking-Analyse: {{ $('Sensemaking Agent').item.json.output }}\nIteration: {{ $json.iteration ?? 0 }}\nVorheriger Review-Hinweis: {{ $json.previous_output ?? 'Erster Durchlauf' }}\n\nErstelle einen verbesserten, juristisch fundierten Widerspruchstext. Beachte:\n- Formale Behördensprache\n- Alle relevanten Rechtsnormen nennen\n- Klare Forderungen formulieren\n- Fristen erwähnen (§ 84 SGG: 1 Monat)\n- Beweise/Gutachten verweisen\n\nGib zurück als JSON:\n{\"improved_text\": \"[vollständiger Widerspruchstext]\", \"legal_references\": [], \"key_demands\": [], \"suggested_evidence\": []}",
+        "options": {
+          "systemMessage": "Du bist der Prompt Engineer Agent des Pyragogy Behörden-Assistenten. Du verfasst und verbesserst juristische Texte für deutsche Behördenverfahren. Deine Kernkompetenz: Widerspruchsschreiben nach SGB IX (GdB-Erhöhung), Widersprüche gegen PKV-Leistungsablehnungen (AXA), Anträge auf Neufeststellung. Stil: professionell, sachlich, rechtlich präzise. Du kennst § 69 SGB IX, § 2 SGB IX, § 48 SGB X, Versorgungsmedizin-Verordnung. Antworte mit validem JSON auf Deutsch."
+        }
+      }
+    },
+    {
+      "id": "lm-prompt",
+      "name": "Claude Prompt Engineer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [1100, 520],
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "options": {
+          "temperature": 0.4,
+          "maxTokens": 4096
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "pyragogy-anthropic",
+          "name": "Pyragogy Anthropic"
+        }
+      }
+    },
+    {
+      "id": "ag-peer",
+      "name": "Peer Reviewer Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [1320, 300],
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Zu prüfender Text:\n{{ $json.output }}\n\nPrüfe diesen Behördentext auf:\n1. Juristische Korrektheit (Rechtsnormen, Fristen)\n2. Argumentationsstärke (0-10)\n3. Formale Korrektheit (Aufbau, Sprache)\n4. Fehlende Elemente\n5. Schwerwiegende Fehler (major_issue)\n\nGib zurück als JSON:\n{\"strengths\": [], \"weaknesses\": [], \"score\": 0, \"major_issue\": false, \"major_issue_reason\": \"\", \"suggestions\": [], \"review_summary\": \"\"}",
+        "options": {
+          "systemMessage": "Du bist der Peer Reviewer Agent des Pyragogy Behörden-Assistenten. Du prüfst Widerspruchsschreiben und Behördentexte auf juristische und formale Qualität. Du setzt major_issue=true wenn: falsche Rechtsgrundlagen zitiert werden, Fristen falsch angegeben sind, Kernforderungen fehlen, oder der Text die Erfolgsaussichten des Widerspruchs gefährdet. Du bist kritisch aber konstruktiv. Antworte mit validem JSON auf Deutsch."
+        }
+      }
+    },
+    {
+      "id": "lm-peer",
+      "name": "Claude Peer Reviewer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [1320, 520],
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "options": {
+          "temperature": 0.1,
+          "maxTokens": 2048
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "pyragogy-anthropic",
+          "name": "Pyragogy Anthropic"
+        }
+      }
+    },
+    {
+      "id": "code-peer",
+      "name": "Peer Output parsen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1430, 300],
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.output || '';\nlet parsed = { major_issue: false, score: 0, review_summary: '', major_issue_reason: '' };\ntry {\n  const clean = raw.replace(/^```json\\s*/m, '').replace(/```\\s*$/m, '');\n  const obj = JSON.parse(clean);\n  parsed = { ...parsed, ...obj };\n} catch(e) {\n  parsed.major_issue = raw.includes('\"major_issue\": true') || raw.includes('\"major_issue\":true');\n}\nreturn [{ json: {\n  major_issue: parsed.major_issue === true,\n  score: Number(parsed.score) || 0,\n  review_summary: String(parsed.review_summary || ''),\n  major_issue_reason: String(parsed.major_issue_reason || ''),\n  review_output: raw\n}}];"
+      }
+    },
+    {
+      "id": "if-major",
+      "name": "Major Issue gefunden?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1540, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-major",
+              "leftValue": "={{ $json.major_issue }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "set-incr",
+      "name": "Iteration erhöhen",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [1760, 160],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "iter-inc",
+              "name": "iteration",
+              "value": "={{ $('Iteration Zähler Init').item.json.iteration + 1 }}",
+              "type": "number"
+            },
+            {
+              "id": "title-keep",
+              "name": "title",
+              "value": "={{ $('Iteration Zähler Init').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "text-keep",
+              "name": "initial_text",
+              "value": "={{ $('Iteration Zähler Init').item.json.initial_text }}",
+              "type": "string"
+            },
+            {
+              "id": "prev-out",
+              "name": "previous_output",
+              "value": "={{ $('Peer Reviewer Agent').item.json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "if-maxiter",
+      "name": "Max 3 Iterationen?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1980, 160],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-iter",
+              "leftValue": "={{ $json.iteration }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "ag-arch",
+      "name": "Archivist Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [1760, 440],
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Titel: {{ $('Iteration Zähler Init').item.json.title }}\nFinaler Text vom Prompt Engineer: {{ $('Prompt Engineer Agent').item.json.output }}\nPeer Review: {{ $('Peer Reviewer Agent').item.json.output }}\n\nBereite die finale Version des Widerspruchsschreibens vor:\n1. Formatiere als sendefertiges Dokument\n2. Füge Betreff, Datum-Platzhalter, Adressfelder hinzu\n3. Erstelle eine Zusammenfassung für den Menschen\n4. Liste offene Aufgaben für den Nutzer auf\n\nGib zurück als JSON:\n{\"final_document\": \"[komplettes sendefertiges Schreiben]\", \"summary\": \"\", \"todo_list\": [], \"estimated_success_chance\": \"\"}",
+        "options": {
+          "systemMessage": "Du bist der Archivist Agent des Pyragogy Behörden-Assistenten. Du finalisierst Dokumente und bereitest sie für die menschliche Überprüfung und den Versand vor. Du fügst alle formalen Elemente eines deutschen Behördenschreibens hinzu: Absender, Empfänger, Datum, Betreff, Aktenzeichen-Platzhalter, Anlagen-Liste. Du erstellst eine klare Zusammenfassung der Erfolgschancen. Antworte mit validem JSON auf Deutsch."
+        }
+      }
+    },
+    {
+      "id": "lm-arch",
+      "name": "Claude Archivist",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [1760, 660],
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "options": {
+          "temperature": 0.2,
+          "maxTokens": 4096
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "pyragogy-anthropic",
+          "name": "Pyragogy Anthropic"
+        }
+      }
+    },
+    {
+      "id": "em-001",
+      "name": "Review Email senden",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1980, 440],
+      "parameters": {
+        "fromEmail": "[DEINE_EMAIL@DOMAIN.DE]",
+        "toEmail": "[DEINE_EMAIL@DOMAIN.DE]",
+        "subject": "=Pyragogy Behörden-Assistent: Freigabe benötigt — {{ $('Iteration Zähler Init').item.json.title }}",
+        "emailType": "html",
+        "message": "=<h2>Pyragogy Behörden-Assistent — Freigabe erforderlich</h2>\n<p><b>Dokument:</b> {{ $('Iteration Zähler Init').item.json.title }}</p>\n<p><b>KI-Bewertung:</b> {{ $json.output }}</p>\n<hr>\n<h3>Aktionen:</h3>\n<p><a href='{{ $execution.resumeUrl }}?response=approved' style='background:#22c55e;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;margin-right:10px;'>✅ FREIGEBEN</a>\n<a href='{{ $execution.resumeUrl }}?response=rejected' style='background:#ef4444;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;'>❌ ABLEHNEN</a></p>\n<hr>\n<h3>Generiertes Dokument (Vorschau):</h3>\n<pre style='background:#f5f5f5;padding:15px;border-radius:5px;font-size:12px;'>{{ $json.output }}</pre>",
+        "options": {}
+      },
+      "credentials": {
+        "smtp": {
+          "id": "pyragogy-email",
+          "name": "Pyragogy Email SMTP"
+        }
+      }
+    },
+    {
+      "id": "wt-001",
+      "name": "Warte auf Freigabe",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [2200, 440],
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "webhookId": "pyragogy-approval"
+    },
+    {
+      "id": "if-appr",
+      "name": "Freigegeben?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2420, 440],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-appr",
+              "leftValue": "={{ $json.query.response }}",
+              "rightValue": "approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "pg-save",
+      "name": "In DB speichern",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [2640, 320],
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "pyragogy_behoerde",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $('Iteration Zähler Init').item.json.title }}",
+            "content": "={{ $('Archivist Agent').item.json.output }}",
+            "status": "approved",
+            "tags": "={{ $('Iteration Zähler Init').item.json.tags }}",
+            "iterations": "={{ $('Iteration Zähler Init').item.json.iteration }}"
+          }
+        },
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "pyragogy-supabase",
+          "name": "Pyragogy Supabase DB"
+        }
+      }
+    },
+    {
+      "id": "rsp-ok",
+      "name": "Erfolg antworten",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2860, 320],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"success\", \"message\": \"Dokument freigegeben und gespeichert\", \"title\": $('Iteration Zähler Init').item.json.title, \"document\": $('Archivist Agent').item.json.output } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "rsp-rej",
+      "name": "Abgelehnt antworten",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2640, 560],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"rejected\", \"message\": \"Dokument wurde abgelehnt. Bitte Eingabe überarbeiten und neu senden.\", \"title\": $('Iteration Zähler Init').item.json.title } }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "rsp-maxiter",
+      "name": "Max Iterationen erreicht",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2200, 160],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"max_iterations\", \"message\": \"Nach 3 Überarbeitungen konnte kein befriedigendes Ergebnis erzielt werden. Bitte Eingabe manuell überarbeiten.\", \"last_review\": $('Peer Reviewer Agent').item.json.output } }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Eingang": {
+      "main": [
+        [{"node": "DB Verbindung prüfen", "type": "main", "index": 0}]
+      ]
+    },
+    "DB Verbindung prüfen": {
+      "main": [
+        [{"node": "Iteration Zähler Init", "type": "main", "index": 0}]
+      ]
+    },
+    "Iteration Zähler Init": {
+      "main": [
+        [{"node": "Meta-Orchestrator Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "Meta-Orchestrator Agent": {
+      "main": [
+        [{"node": "Sensemaking Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "Sensemaking Agent": {
+      "main": [
+        [{"node": "Prompt Engineer Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "Prompt Engineer Agent": {
+      "main": [
+        [{"node": "Peer Reviewer Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "Peer Reviewer Agent": {
+      "main": [
+        [{"node": "Peer Output parsen", "type": "main", "index": 0}]
+      ]
+    },
+    "Peer Output parsen": {
+      "main": [
+        [{"node": "Major Issue gefunden?", "type": "main", "index": 0}]
+      ]
+    },
+    "Major Issue gefunden?": {
+      "main": [
+        [{"node": "Iteration erhöhen", "type": "main", "index": 0}],
+        [{"node": "Archivist Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "Iteration erhöhen": {
+      "main": [
+        [{"node": "Max 3 Iterationen?", "type": "main", "index": 0}]
+      ]
+    },
+    "Max 3 Iterationen?": {
+      "main": [
+        [{"node": "Max Iterationen erreicht", "type": "main", "index": 0}],
+        [{"node": "Prompt Engineer Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "Archivist Agent": {
+      "main": [
+        [{"node": "Review Email senden", "type": "main", "index": 0}]
+      ]
+    },
+    "Review Email senden": {
+      "main": [
+        [{"node": "Warte auf Freigabe", "type": "main", "index": 0}]
+      ]
+    },
+    "Warte auf Freigabe": {
+      "main": [
+        [{"node": "Freigegeben?", "type": "main", "index": 0}]
+      ]
+    },
+    "Freigegeben?": {
+      "main": [
+        [{"node": "In DB speichern", "type": "main", "index": 0}],
+        [{"node": "Abgelehnt antworten", "type": "main", "index": 0}]
+      ]
+    },
+    "In DB speichern": {
+      "main": [
+        [{"node": "Erfolg antworten", "type": "main", "index": 0}]
+      ]
+    },
+    "Claude Meta-Orchestrator": {
+      "ai_languageModel": [
+        [{"node": "Meta-Orchestrator Agent", "type": "ai_languageModel", "index": 0}]
+      ]
+    },
+    "Claude Sensemaking": {
+      "ai_languageModel": [
+        [{"node": "Sensemaking Agent", "type": "ai_languageModel", "index": 0}]
+      ]
+    },
+    "Claude Prompt Engineer": {
+      "ai_languageModel": [
+        [{"node": "Prompt Engineer Agent", "type": "ai_languageModel", "index": 0}]
+      ]
+    },
+    "Claude Peer Reviewer": {
+      "ai_languageModel": [
+        [{"node": "Peer Reviewer Agent", "type": "ai_languageModel", "index": 0}]
+      ]
+    },
+    "Claude Archivist": {
+      "ai_languageModel": [
+        [{"node": "Archivist Agent", "type": "ai_languageModel", "index": 0}]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateId": "pyragogy-behoerde-v1",
+    "description": "Pyragogy Behörden-Assistent: Multi-Agenten-System für deutsche Widerspruchsschreiben (GdB, AXA PKV). Basiert auf Pyragogy n8n/4904, angepasst mit Claude Sonnet statt GPT-4o. Datenbank: Supabase (PostgreSQL, SSL erforderlich, RLS deaktiviert für Service-Verbindung). Supabase-Credential in n8n: Host=db.[REF].supabase.co, Port=5432, DB=postgres, User=postgres, SSL=true."
+  },
+  "tags": []
+}
