@@ -26,8 +26,8 @@
       },
       "credentials": {
         "postgres": {
-          "id": "pyragogy-supabase",
-          "name": "Pyragogy Supabase DB"
+          "id": "pyragogy-postgres",
+          "name": "Pyragogy n8n PostgreSQL"
         }
       }
     },
@@ -446,8 +446,8 @@
       },
       "credentials": {
         "postgres": {
-          "id": "pyragogy-supabase",
-          "name": "Pyragogy Supabase DB"
+          "id": "pyragogy-postgres",
+          "name": "Pyragogy n8n PostgreSQL"
         }
       }
     },
@@ -607,7 +607,7 @@
   "staticData": null,
   "meta": {
     "templateId": "pyragogy-behoerde-v1",
-    "description": "Pyragogy Behörden-Assistent: Multi-Agenten-System für deutsche Widerspruchsschreiben (GdB, AXA PKV). Basiert auf Pyragogy n8n/4904, angepasst mit Claude Sonnet statt GPT-4o. Datenbank: Supabase (PostgreSQL, SSL erforderlich, RLS deaktiviert für Service-Verbindung). Supabase-Credential in n8n: Host=db.[REF].supabase.co, Port=5432, DB=postgres, User=postgres, SSL=true."
+    "description": "Pyragogy Behörden-Assistent: Multi-Agenten-System für deutsche Widerspruchsschreiben (GdB, AXA PKV). Basiert auf Pyragogy n8n/4904, angepasst mit Claude Sonnet statt GPT-4o. Datenbank: lokales PostgreSQL im Docker-Netzwerk. n8n Credential 'Pyragogy n8n PostgreSQL': Host=postgres, Port=5432, DB=n8n, User=n8n, SSL=aus."
   },
   "tags": []
 }
