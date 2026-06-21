@@ -1,0 +1,20 @@
+# Cloudflare Tunnel example for OpenClaw on your VPS.
+# Copy to the VPS, adjust credentials/tunnel ID, then run: cloudflared tunnel run openclaw
+#
+# Prerequisites on the VPS:
+#   - OpenClaw gateway bound to loopback (gateway.bind = "loopback")
+#   - Token auth enabled in ~/.openclaw/openclaw.json
+#   - Docker sandbox mode enabled for isolated tool execution
+#
+# Cloudflare Zero Trust:
+#   1. Create a new Public Hostname: openclaw.mapaluto.de
+#   2. Point it to this tunnel service: http://127.0.0.1:18789
+#   3. Protect with the same Access policy as mapaluto.de
+
+tunnel: <YOUR_TUNNEL_ID>
+credentials-file: /etc/cloudflared/<YOUR_TUNNEL_ID>.json
+
+ingress:
+  - hostname: openclaw.mapaluto.de
+    service: http://127.0.0.1:18789
+  - service: http_status:404
