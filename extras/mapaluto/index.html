@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Mapaluto · Portal</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --bg-elevated: #121a2f;
+      --bg-card: #151f38;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #eef2ff;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --openclaw: #f97316;
+      --openclaw-hover: #fb923c;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(249, 115, 22, 0.12), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .page {
+      width: min(960px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 3rem 0 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0 auto;
+      max-width: 42rem;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+      box-shadow: var(--shadow);
+      min-height: 100%;
+    }
+
+    .card.featured {
+      border-color: rgba(249, 115, 22, 0.35);
+      background:
+        linear-gradient(180deg, rgba(249, 115, 22, 0.08), rgba(255, 255, 255, 0.01)),
+        var(--bg-card);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .icon {
+      width: 3rem;
+      height: 3rem;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.2rem 0.55rem;
+      white-space: nowrap;
+    }
+
+    .tag.sandbox {
+      color: #fdba74;
+      border-color: rgba(249, 115, 22, 0.35);
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--text-muted);
+      flex: 1;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 2.75rem;
+      padding: 0 1rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .button-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .button-openclaw {
+      background: var(--openclaw);
+      color: #111827;
+    }
+
+    .button-openclaw:hover {
+      background: var(--openclaw-hover);
+    }
+
+    .button-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding-top: 2rem;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="badge">🔒 Geschützt durch Cloudflare Access</div>
+      <h1>Mapaluto Portal</h1>
+      <p class="subtitle">
+        Zentraler Zugang zu deinen privaten Diensten – von überall erreichbar,
+        sicher hinter Zero Trust.
+      </p>
+    </header>
+
+    <section class="grid" aria-label="Dienste">
+      <article class="card featured">
+        <div class="card-top">
+          <div class="icon" aria-hidden="true">🦞</div>
+          <span class="tag sandbox">VPS Sandbox</span>
+        </div>
+        <h2>OpenClaw</h2>
+        <p>
+          Persönlicher AI-Agent auf dem eigenen VPS mit isolierter Docker-Sandbox.
+          Sicherer Gateway-Zugang für Chat, Tools und Automation.
+        </p>
+        <div class="actions">
+          <a class="button button-openclaw" href="https://openclaw.mapaluto.de" rel="noopener">
+            OpenClaw öffnen
+          </a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div class="icon" aria-hidden="true">🤖</div>
+          <span class="tag">Agent</span>
+        </div>
+        <h2>Mapaluto Agent</h2>
+        <p>
+          Cloud-basierter Assistent für schnelle Aufgaben, Code und
+          tägliche Automatisierung.
+        </p>
+        <div class="actions">
+          <a class="button button-primary" href="https://app.mapaluto.de" rel="noopener">
+            Agent starten
+          </a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <div class="icon" aria-hidden="true">💪</div>
+          <span class="tag">Fitness</span>
+        </div>
+        <h2>wger Training</h2>
+        <p>
+          Workouts, Ernährung und Fortschritt – deine selbst gehostete
+          Fitness-Plattform.
+        </p>
+        <div class="actions">
+          <a class="button button-primary" href="https://fitness.mapaluto.de" rel="noopener">
+            Fitness öffnen
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <p>mapaluto.de · Privates Portal</p>
+    </footer>
+  </main>
+</body>
+</html>
