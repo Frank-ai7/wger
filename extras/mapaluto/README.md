@@ -1,37 +1,35 @@
-# mapaluto.de – Startbuttons (Ubuntu + Kiloclaw)
+# mapaluto.de – Ubuntu + Kiloclaw Buttons
 
-Portal-Vorlage für mapaluto.de mit zwei Start-Buttons:
+## Warum auf mapaluto.de noch nichts sichtbar ist
 
-- **Ubuntu starten** → Cursor Cloud-Agent (danach „Cloud Desktop“)
-- **Kiloclaw starten** → Kiloclaw-Dienst (URL in `config.js`)
+Die Dateien hier liegen im **wger-Repo** unter `extras/mapaluto/`.
+Deine echte Dashboard-Seite (Hetzner Apps, Sandkasten, Khoj, …) ist ein **anderes Projekt** und wurde bisher **nicht geändert**.
 
-## Dateien
+Du musst die Karten in **deinem mapaluto.de-Website-Ordner** einfügen und deployen.
 
-| Datei | Zweck |
-| --- | --- |
-| `index.html` | Komplette Portal-Startseite |
-| `config.js` | Zentrale URLs (Ubuntu, Kiloclaw, Cursor-Deeplink) |
-| `snippet-ubuntu-button.html` | Beide Buttons zum Einfügen in bestehende Seiten |
-| `CURSOR-DESKTOP-PROMPT.md` | Copy-Paste-Prompt für Cursor Desktop |
+## Kiloclaw-URL
 
-## URLs anpassen
+`https://mapaluto.de/kiloclaw` funktioniert **nicht** – diese Route gibt es nicht.
 
-In `config.js`:
+Auf deinem Dashboard existiert bereits unter **Sandkasten**:
 
-```javascript
-window.MAPALUTO_LINKS = {
-  ubuntuAgentUrl: "https://cursor.com/agents/bc-...",
-  ubuntuCursorDeeplink: "cursor://anysphere.cursor-deeplink/background-agent?bcId=bc-...",
-  kiloclawUrl: "https://mapaluto.de/kiloclaw",  // hier anpassen
-};
-```
+- **Agent** → OpenClaw → vermutlich `/agent`
 
-## Deployment
+**Kiloclaw starten** verlinkt deshalb standardmäßig auf **`/agent`** (gleiche OpenClaw-Route).
+Falls Kiloclaw woanders läuft, URL in `config.js` anpassen.
 
-1. `index.html`, `config.js` und ggf. Assets auf den Webserver hochladen.
-2. Seite liegt hinter **Cloudflare Access** – nach Login sind die Buttons sichtbar.
-3. Kiloclaw-URL prüfen: Standard ist `/kiloclaw` auf mapaluto.de.
+## So einbauen (Cursor Desktop)
 
-## Hinweis Ubuntu
+1. In Cursor Desktop dein **mapaluto.de-Projekt** öffnen (nicht wger).
+2. Die Datei finden, in der die Karten definiert sind (z. B. `index.html`, `dashboard.json`, `services.yaml`).
+3. Zwei neue Karten in **Sandkasten** einfügen – siehe `dashboard-cards-patch.json`.
+4. Deployen (Cloudflare Pages / Tunnel / nginx).
 
-Der Ubuntu-Button öffnet den Cursor Agent. Den Desktop startest du in Cursor über **Cloud Desktop** (rechts im Panel).
+## Ubuntu-Button
+
+- URL: `https://cursor.com/agents/bc-06981860-e00f-4262-a344-41c9d6c6fce1`
+- Danach in Cursor: **Cloud Desktop** klicken
+
+## Hilfe
+
+Wenn du mir den **Pfad zur Dashboard-Datei** schickst (z. B. `index.html` oder `config.json` aus deinem mapaluto-Projekt), kann ich die Karten exakt im richtigen Format einbauen.
