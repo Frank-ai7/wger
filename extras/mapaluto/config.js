@@ -5,6 +5,9 @@ window.MAPALUTO_LINKS = {
     "cursor://anysphere.cursor-deeplink/background-agent?bcId=bc-06981860-e00f-4262-a344-41c9d6c6fce1",
   kiloclawUrl: "/agent",
   openclawUrl: "/agent",
+  // HTTPS-Proxy statt blockierter Ports 8080/8765 (OpenClaw + Sandbox-Chrome)
+  tomsMalAppUrl: "https://app.mapaluto.de/toms-mal-app/",
+  festungUrl: "https://app.mapaluto.de/festung/",
 };
 
 window.MAPALUTO_CARDS = [
@@ -21,11 +24,18 @@ window.MAPALUTO_CARDS = [
     ],
   },
   {
+    section: "OpenClaw / Sandbox",
+    cards: [
+      { title: "Tom's Mal App", desc: "Webchat · Port 8080 via HTTPS-Proxy", urlKey: "tomsMalAppUrl", icon: "🦞", external: true },
+      { title: "Festung", desc: "PyMuPDF-Tools · Port 8765 via HTTPS-Proxy", urlKey: "festungUrl", icon: "🏰", external: true },
+      { title: "OpenClaw Agent", desc: "KI-Assistent · nach Cloudflare-Login", urlKey: "openclawUrl", icon: "🤖" },
+    ],
+  },
+  {
     section: "Sandkasten",
     cards: [
       { title: "Ubuntu starten", desc: "Cursor Cloud-Sandbox · danach Cloud Desktop", urlKey: "ubuntuAgentUrl", icon: "🟠", accent: "#e95420", external: true },
       { title: "Kiloclaw starten", desc: "OpenClaw Agent · KI-Assistent", urlKey: "kiloclawUrl", icon: "🦞", accent: "#7c3aed" },
-      { title: "Agent", desc: "KI-Assistent · OpenClaw (nach Cloudflare-Login)", urlKey: "openclawUrl", icon: "🤖" },
     ],
   },
   {
@@ -39,8 +49,8 @@ window.MAPALUTO_CARDS = [
   {
     section: "PDF (Heim-PC)",
     cards: [
-      { title: "PyMuPDF-Tools", desc: "11 PDF-Werkzeuge · Markdown mit YAML", url: "http://localhost:8765", icon: "📄", external: true },
-      { title: "App direkt", desc: "Nur wenn Web-App schon läuft", url: "http://localhost:8765", icon: "🔗", external: true },
+      { title: "PyMuPDF-Tools", desc: "11 PDF-Werkzeuge · über app.mapaluto.de/festung/", urlKey: "festungUrl", icon: "📄", external: true },
+      { title: "Festung direkt", desc: "HTTPS-Proxy statt localhost:8765", urlKey: "festungUrl", icon: "🔗", external: true },
     ],
   },
   {
