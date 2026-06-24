@@ -16,6 +16,17 @@ extras/mapaluto/index.html   →  /index.html  (oder dein Dashboard-Pfad)
 extras/mapaluto/config.js    →  /config.js
 ```
 
+## app.mapaluto.de (502 + Sicherheit)
+
+Wenn `https://app.mapaluto.de/` **502** zeigt:
+
+```bash
+sudo bash extras/mapaluto/DEPLOY-HETZNER.sh
+sudo bash extras/mapaluto/secure-firewall.sh
+```
+
+Schließt die offenen Ports 8080/8765 nach außen und liefert eine Startseite auf `/`.
+
 **Wichtig:** Beide Dateien müssen im **gleichen Ordner** liegen.
 
 ## URLs anpassen
