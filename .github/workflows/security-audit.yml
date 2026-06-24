@@ -65,7 +65,7 @@ jobs:
         run: corepack enable
 
       - name: Install JS dependencies
-        run: COREPACK_ENABLE_STRICT=0 yarn install
+        run: COREPACK_ENABLE_STRICT=0 yarn install --immutable
 
       - name: Audit JS dependencies
         run: COREPACK_ENABLE_STRICT=0 yarn npm audit --all || true

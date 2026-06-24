@@ -2,13 +2,13 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 4
-  cacheKey: 7
+  version: 8
+  cacheKey: 10
 
 "@popperjs/core@npm:^2.11.8":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
-  checksum: 8c170d4eb56b6604b190eb5ed9dd6ab4b9e9cdb6ef6ee5b3884fe14af37a3a4289af1bfa0373e4dab288fddb12b43d94a565f313beaae023cd1da742173b050b
+  checksum: 10/ddd16090cde777aaf102940f05d0274602079a95ad9805bd20bc55dcc7c3a2ba1b99dd5c73e5cc2753c3d31250ca52a67d58059459d7d27debb983a9f552936c
   languageName: node
   linkType: hard
 
@@ -17,14 +17,14 @@ __metadata:
   resolution: "bootstrap@npm:5.3.8"
   peerDependencies:
     "@popperjs/core": ^2.11.8
-  checksum: 4790eb6a93efa953bfc3a68a3c3504743fd609962a7f4a3beec740b1fa932736242dbaacb00454049b856baa34d49a45bc408742602c0d2c3bf889f2297e9704
+  checksum: 10/ca36e1816940ee424b91f3a534e7a359c1f180da00e92c650b92a9c2621a1ca24ee71a0886666675718b58527f9193cd0ead934da7a92108224013fa07bec2d2
   languageName: node
   linkType: hard
 
 "components-font-awesome@npm:5.9.0":
   version: 5.9.0
   resolution: "components-font-awesome@npm:5.9.0"
-  checksum: 14ac09791e07e54df2566fdb57a38d5cf624efe10d70accbada5a4b9161b9f88a29adbacdcef64420ce0f09c07f41692540a836a97ee70eb0e0968894e94b787
+  checksum: 10/72a3357e8b4e1911a32fd69bef0d3d03d5d6602819d9f66415494d9f8855883bd09e883a2777fd41570f1397507ec68392ca6f74423a8c463d65ccc0ba9cc7b7
   languageName: node
   linkType: hard
 
@@ -34,7 +34,7 @@ __metadata:
   dependencies:
     datatables.net: "npm:2.3.4"
     jquery: "npm:>=1.7"
-  checksum: a70069d1a1acf07d24cde49f1578d0f00979db2bcf49b2fec990d8cb57756c653e29e268151a021b4ffd13d5e62fe8fa86231d4da81574ababdd05d06c8bab84
+  checksum: 10/a6ad9177620e667c925c8afb133909e53b9a6a6fcc81ce6e54e94c3f13801a404b532ff656265170700f9adec6f95d61de9352bcd0ba25ebba5e2e79714fe873
   languageName: node
   linkType: hard
 
@@ -43,14 +43,14 @@ __metadata:
   resolution: "datatables.net@npm:2.3.4"
   dependencies:
     jquery: "npm:>=1.7"
-  checksum: a39fdad40ecd3df66bd435e830b5c9a41e0670fb10eb8ee4f7f0db41e2d2e6213917553ec71f4f4e7bdebb0a7233dfa11fcbe8e62429295963a8dbbd93f9af88
+  checksum: 10/86e00c50ad8a2fdb5f004100b3d38fb29d6aeb690b5a09fd239d079ee9a022ff3a5e58865fa92e7b73a5865438b011ad9966d77b01fbcddd8be7319b1ece79b3
   languageName: node
   linkType: hard
 
 "desandro-matches-selector@npm:^2.0.0":
   version: 2.0.2
   resolution: "desandro-matches-selector@npm:2.0.2"
-  checksum: b16d94b0693e6981652445e55808764df2622033b2cd942163d6e492bb5108c26bef7f68e63973966cb210ec493c4fcc299b48aa50814892e8ebb6692ce84d9b
+  checksum: 10/d7d211ab037587d5aebfce39d1b3e794029a83197dabe7f3ef01b0445446b08bcc97ac2c59dd361f2e857ccce52d493114ee1573e8dc604762c9322708f1b54d
   languageName: node
   linkType: hard
 
@@ -59,14 +59,14 @@ __metadata:
   resolution: "devbridge-autocomplete@npm:1.5.0"
   peerDependencies:
     jquery: ">=1.9"
-  checksum: a628eb234a6cf58135597cee8d90941223195f66dcb2e53d26bc5b9cace3e455a4abe2c389eea91a5da3d5bfdccb370b93b33968c1e8014043d8617b34f58527
+  checksum: 10/78dfdbc61e3a5d3516fb68988331137be99ac3b5f9bb5f43670c447893d0bfdf8439df13fa2aa1e6f735dbe90be1ba84abf7d3fec2473d756f98ebab87c6739f
   languageName: node
   linkType: hard
 
 "ev-emitter@npm:^1.0.0":
   version: 1.1.1
   resolution: "ev-emitter@npm:1.1.1"
-  checksum: c93adf4cfac74892e0eede007d2481b9621d345e97884ea06d1cf5bcfccf7c6a6d5e15aba9369b66c4087967b338694710508eb11253f01bba9e216359811153
+  checksum: 10/a6c9767f8a70512a4e211b6d78406bcbae7950d778ce8dd90bb64e9d7fb16878dd598a042e9a2b53dc769175db7d9da0b8e4b8d570482d67936975dcc5419ca0
   languageName: node
   linkType: hard
 
@@ -75,28 +75,28 @@ __metadata:
   resolution: "fizzy-ui-utils@npm:2.0.7"
   dependencies:
     desandro-matches-selector: "npm:^2.0.0"
-  checksum: a4dd1c4f8cb425e890ae7a9068e3645b9cc01ddc86df961a6383f1aca5c38aae9862d2c08163dd7e693f1bd550adc11892288aa8519ef9618b17e5db8afebabe
+  checksum: 10/00262e74a429450e7e958330bb65f0403335d50ff104e881628ba6d4bad13f92888559df3cd4e479b0b5b0da3218e762fdc0a40dbce1adb32991d765e25d2936
   languageName: node
   linkType: hard
 
 "get-size@npm:^2.0.2":
   version: 2.0.3
   resolution: "get-size@npm:2.0.3"
-  checksum: 31c88b42fea7f60e6921a4d67ea2314fc29b815adfccefe1e8ea48fb6f544c04878b90bd213183fb4ff79a7d05070ed29083c44f5d7b8c2460c91ce9ea35d123
+  checksum: 10/268530ea41a2217c5aa7bc750259a5db8c8cbf50036cc6e33bb3bca82f9333f2facc8788d1bd943f1ca69f51109226919209592a0b8c9206eebe89ca12d69285
   languageName: node
   linkType: hard
 
 "htmx.org@npm:^2.0.7":
   version: 2.0.7
   resolution: "htmx.org@npm:2.0.7"
-  checksum: 76c62384950c4ae59614485e28d6c59b030ec2292fa1fa8738fd2e9b0f68da4a647ac03f9831d313aa6cc0af62a41a188c54a0e6bcbd92e549ca1f73b3e7c9ad
+  checksum: 10/a356ec8b3648988cba2f965a3302a066af6a9ef229af6031f3a3f24ceabd66fa8891ec05ce38ac80e95c48b13b6adf32f1a7d6f0433db4b12553b396e18b26d4
   languageName: node
   linkType: hard
 
 "jquery@npm:>=1.7, jquery@npm:^3.7.1":
   version: 3.7.1
   resolution: "jquery@npm:3.7.1"
-  checksum: 5d2ea78250a8bdfa8e1232b064e11d86b1bc0c7b3e1ebbfee9ed21f1138cff606a07083709fa9d64bbbf94cdba3119b45604a078ba88e9c48fa5ae894eaf8ec6
+  checksum: 10/17be9929f5fa37697d9848284f0d108c543318ef79ec794e130cd0c49f6c050d60c803a69e8cfa16fa19f5ff7cdb814a6905cceab0831186560c65ed113cd579
   languageName: node
   linkType: hard
 
@@ -106,7 +106,7 @@ __metadata:
   dependencies:
     get-size: "npm:^2.0.2"
     outlayer: "npm:^2.1.0"
-  checksum: 0332563f7a4a40f7a0a114240df95dbfcf4eaa6bdef1316e441f7907b9ff3ea5ee20e7e37ff31fc784548792b2f57e868f41be0eaa31f0a6bb1446cc2d61cc10
+  checksum: 10/7ab8817fe2d647537aba4407a95c2d37ff70d720d1ac4ece11101b4d8b64513da2a23aa5f5d779df12936457c6571f6721ce08a4a322522ff86b4b1df1cb6fe1
   languageName: node
   linkType: hard
 
@@ -117,14 +117,14 @@ __metadata:
     ev-emitter: "npm:^1.0.0"
     fizzy-ui-utils: "npm:^2.0.0"
     get-size: "npm:^2.0.2"
-  checksum: ad9902fb15b7db43f13315d41d4abf1b86f90116400027bad811ffd1df6d9a41330b8c88ad65c1ed0f26e8f078770923b9ea76e1ad37194bf8e48e3582effa6c
+  checksum: 10/15a819257f042a1cd01a3a33f7e1d6489183eb1a5467e8688b27b5641393fa755fe77e36b47159ad9d4c1e165c04b94222e3c65f635113efbdafda432a4de41c
   languageName: node
   linkType: hard
 
 "popper.js@npm:^1.16.1":
   version: 1.16.1
   resolution: "popper.js@npm:1.16.1"
-  checksum: eb53806fb7680e31c7d1db096f95438a40a7cb869f7ee0e27100c0860f11583a0d322606c6073618e7fe8865f834ec36482901b547256d9a0cf2b22434bca75d
+  checksum: 10/71338c86faf9b66ce60c3cdd7fb2ed742944e5d2765a188f269239fee2980aa6223b77b41302d1b6eb7d724e611092f9a2576d0048ac2071b605291abc72c0cf
   languageName: node
   linkType: hard
 
@@ -132,14 +132,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "wger@workspace:."
   dependencies:
-    "@popperjs/core": ^2.11.8
-    bootstrap: 5.3.8
-    components-font-awesome: 5.9.0
-    datatables.net-bs5: ^2.3.4
-    devbridge-autocomplete: ^1.5.0
-    htmx.org: ^2.0.7
-    jquery: ^3.7.1
-    masonry-layout: ^4.2.2
-    popper.js: ^1.16.1
+    "@popperjs/core": "npm:^2.11.8"
+    bootstrap: "npm:5.3.8"
+    components-font-awesome: "npm:5.9.0"
+    datatables.net-bs5: "npm:^2.3.4"
+    devbridge-autocomplete: "npm:^1.5.0"
+    htmx.org: "npm:^2.0.7"
+    jquery: "npm:^3.7.1"
+    masonry-layout: "npm:^4.2.2"
+    popper.js: "npm:^1.16.1"
   languageName: unknown
   linkType: soft
