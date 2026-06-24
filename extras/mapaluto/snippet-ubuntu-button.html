@@ -1,16 +1,46 @@
 <!-- Einbinden in bestehende mapaluto.de Seite -->
-<a
-  class="mapaluto-ubuntu-start"
-  href="https://cursor.com/agents/bc-06981860-e00f-4262-a344-41c9d6c6fce1"
-  target="_blank"
-  rel="noopener noreferrer"
-  style="
-    display:inline-flex;align-items:center;gap:10px;
-    padding:14px 20px;border-radius:12px;
-    background:#e95420;color:#fff;text-decoration:none;
-    font:700 16px/1 'Segoe UI',system-ui,sans-serif;
-    box-shadow:0 10px 24px rgba(233,84,32,.28);
-  "
->
-  Ubuntu starten
-</a>
+<script src="/config.js"></script>
+
+<div style="display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;">
+  <a
+    id="mapaluto-ubuntu-start"
+    class="mapaluto-ubuntu-start"
+    href="https://cursor.com/agents/bc-06981860-e00f-4262-a344-41c9d6c6fce1"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="
+      display:inline-flex;align-items:center;gap:10px;
+      padding:14px 20px;border-radius:12px;
+      background:#e95420;color:#fff;text-decoration:none;
+      font:700 16px/1 'Segoe UI',system-ui,sans-serif;
+      box-shadow:0 10px 24px rgba(233,84,32,.28);
+    "
+  >
+    Ubuntu starten
+  </a>
+
+  <a
+    id="mapaluto-kiloclaw-start"
+    class="mapaluto-kiloclaw-start"
+    href="https://mapaluto.de/kiloclaw"
+    style="
+      display:inline-flex;align-items:center;gap:10px;
+      padding:14px 20px;border-radius:12px;
+      background:#7c3aed;color:#fff;text-decoration:none;
+      font:700 16px/1 'Segoe UI',system-ui,sans-serif;
+      box-shadow:0 10px 24px rgba(124,58,237,.28);
+    "
+  >
+    Kiloclaw starten
+  </a>
+</div>
+
+<script>
+  (function () {
+    var links = window.MAPALUTO_LINKS || {};
+    var ubuntu = document.getElementById("mapaluto-ubuntu-start");
+    var kiloclaw = document.getElementById("mapaluto-kiloclaw-start");
+    if (ubuntu && links.ubuntuAgentUrl) ubuntu.href = links.ubuntuAgentUrl;
+    if (kiloclaw && links.kiloclawUrl) kiloclaw.href = links.kiloclawUrl;
+  })();
+</script>

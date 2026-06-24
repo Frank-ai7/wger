@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mapaluto.de – Portal</title>
-  <meta name="description" content="Persönliches Portal – Ubuntu Sandbox, Tools und Dienste">
+  <meta name="description" content="Persönliches Portal – Ubuntu Sandbox, Kiloclaw, Tools und Dienste">
+  <script src="config.js"></script>
   <style>
     :root {
       --bg: #0f1419;
@@ -14,8 +15,9 @@
       --muted: #9aa7b8;
       --ubuntu-orange: #e95420;
       --ubuntu-orange-hover: #ff6a2e;
+      --kiloclaw: #7c3aed;
+      --kiloclaw-hover: #9333ea;
       --accent: #3b82f6;
-      --success: #22c55e;
       --radius: 14px;
       --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
     }
@@ -29,7 +31,7 @@
       color: var(--text);
       background:
         radial-gradient(circle at top left, rgba(233, 84, 32, 0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(124, 58, 237, 0.14), transparent 24%),
         var(--bg);
     }
 
@@ -39,9 +41,7 @@
       padding: 48px 0 64px;
     }
 
-    header {
-      margin-bottom: 32px;
-    }
+    header { margin-bottom: 32px; }
 
     .badge {
       display: inline-block;
@@ -67,6 +67,13 @@
       color: var(--muted);
       font-size: 1.05rem;
       line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
     }
 
     .grid {
@@ -112,12 +119,11 @@
       transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-block { width: 100%; }
 
     .btn-ubuntu {
-      width: 100%;
       background: linear-gradient(135deg, var(--ubuntu-orange), #c7461a);
       color: #fff;
       box-shadow: 0 10px 24px rgba(233, 84, 32, 0.28);
@@ -125,6 +131,16 @@
 
     .btn-ubuntu:hover {
       background: linear-gradient(135deg, var(--ubuntu-orange-hover), #d9551f);
+    }
+
+    .btn-kiloclaw {
+      background: linear-gradient(135deg, var(--kiloclaw), #6d28d9);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(124, 58, 237, 0.28);
+    }
+
+    .btn-kiloclaw:hover {
+      background: linear-gradient(135deg, var(--kiloclaw-hover), #7e22ce);
     }
 
     .btn-secondary {
@@ -137,7 +153,7 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    .ubuntu-icon {
+    .btn-icon {
       width: 22px;
       height: 22px;
       flex: 0 0 22px;
@@ -151,9 +167,7 @@
       line-height: 1.55;
     }
 
-    .steps li + li {
-      margin-top: 6px;
-    }
+    .steps li + li { margin-top: 6px; }
 
     footer {
       margin-top: 28px;
@@ -168,10 +182,18 @@
       <div class="badge">mapaluto.de</div>
       <h1>Willkommen im Portal</h1>
       <p class="lead">
-        Starte deine sichere Ubuntu-Sandbox, Tools und weitere Dienste von hier aus.
-        Nach dem Klick auf <strong>Ubuntu starten</strong> in Cursor rechts
-        <strong>Cloud Desktop</strong> wählen.
+        Starte Ubuntu-Sandbox, Kiloclaw und weitere Dienste von hier aus.
+        Bei Ubuntu danach in Cursor rechts <strong>Cloud Desktop</strong> wählen.
       </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-ubuntu" id="ubuntu-start-hero" href="#" target="_blank" rel="noopener noreferrer">
+          Ubuntu starten
+        </a>
+        <a class="btn btn-kiloclaw" id="kiloclaw-start-hero" href="#">
+          Kiloclaw starten
+        </a>
+      </div>
     </header>
 
     <section class="grid">
@@ -180,20 +202,7 @@
         <p>
           Öffnet den Cursor Cloud-Agent mit Ubuntu-Desktop (Terminal, Browser, Dateimanager).
         </p>
-        <a
-          class="btn btn-ubuntu"
-          id="ubuntu-start"
-          href="https://cursor.com/agents/bc-06981860-e00f-4262-a344-41c9d6c6fce1"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg class="ubuntu-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.18"></circle>
-            <circle cx="7.5" cy="11" r="2.2" fill="currentColor"></circle>
-            <circle cx="12" cy="7.5" r="2.2" fill="currentColor"></circle>
-            <circle cx="16.5" cy="11" r="2.2" fill="currentColor"></circle>
-            <path d="M8.8 14.2c1.1 1.6 2.9 2.6 4.9 2.6 1.3 0 2.5-.4 3.5-1.1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
-          </svg>
+        <a class="btn btn-ubuntu btn-block" id="ubuntu-start" href="#" target="_blank" rel="noopener noreferrer">
           Ubuntu starten
         </a>
         <ol class="steps">
@@ -204,22 +213,64 @@
       </article>
 
       <article class="card">
+        <h2>Kiloclaw</h2>
+        <p>
+          Startet deinen Kiloclaw-Dienst auf mapaluto.de.
+        </p>
+        <a class="btn btn-kiloclaw btn-block" id="kiloclaw-start" href="#">
+          Kiloclaw starten
+        </a>
+        <ol class="steps">
+          <li>Öffnet den Kiloclaw-Bereich.</li>
+          <li>URL bei Bedarf in <code>config.js</code> anpassen.</li>
+        </ol>
+      </article>
+
+      <article class="card">
         <h2>Cursor Desktop-App</h2>
         <p>
-          Alternative: Agent direkt in der installierten Cursor-App öffnen.
+          Ubuntu-Agent direkt in der installierten Cursor-App öffnen.
         </p>
-        <a
-          class="btn btn-secondary"
-          href="cursor://anysphere.cursor-deeplink/background-agent?bcId=bc-06981860-e00f-4262-a344-41c9d6c6fce1"
-        >
+        <a class="btn btn-secondary btn-block" id="cursor-deeplink" href="#">
           In Cursor öffnen
         </a>
       </article>
     </section>
 
-    <footer>
-      Agent-ID: bc-06981860-e00f-4262-a344-41c9d6c6fce1
-    </footer>
+    <footer id="footer-info"></footer>
   </main>
+
+  <script>
+    (function () {
+      var links = window.MAPALUTO_LINKS || {};
+      var ubuntuUrl = links.ubuntuAgentUrl || "#";
+      var kiloclawUrl = links.kiloclawUrl || "/kiloclaw";
+      var deeplink = links.ubuntuCursorDeeplink || "#";
+
+      ["ubuntu-start", "ubuntu-start-hero"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.href = ubuntuUrl;
+      });
+
+      ["kiloclaw-start", "kiloclaw-start-hero"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.href = kiloclawUrl;
+          if (kiloclawUrl.startsWith("http")) {
+            el.target = "_blank";
+            el.rel = "noopener noreferrer";
+          }
+        }
+      });
+
+      var deeplinkEl = document.getElementById("cursor-deeplink");
+      if (deeplinkEl) deeplinkEl.href = deeplink;
+
+      var footer = document.getElementById("footer-info");
+      if (footer) {
+        footer.textContent = "Ubuntu-Agent: " + ubuntuUrl + " · Kiloclaw: " + kiloclawUrl;
+      }
+    })();
+  </script>
 </body>
 </html>

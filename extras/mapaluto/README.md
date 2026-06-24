@@ -1,37 +1,37 @@
-# mapaluto.de – Ubuntu Startbutton
+# mapaluto.de – Startbuttons (Ubuntu + Kiloclaw)
 
-Dieses Paket erweitert die mapaluto.de-Seite um einen **Ubuntu starten**-Button für die Cursor Cloud-Sandbox.
+Portal-Vorlage für mapaluto.de mit zwei Start-Buttons:
+
+- **Ubuntu starten** → Cursor Cloud-Agent (danach „Cloud Desktop“)
+- **Kiloclaw starten** → Kiloclaw-Dienst (URL in `config.js`)
 
 ## Dateien
 
 | Datei | Zweck |
 | --- | --- |
-| `index.html` | Komplette Portal-Startseite mit Ubuntu-Button |
-| `snippet-ubuntu-button.html` | Nur der Button zum Einfügen in eine bestehende Seite |
+| `index.html` | Komplette Portal-Startseite |
+| `config.js` | Zentrale URLs (Ubuntu, Kiloclaw, Cursor-Deeplink) |
+| `snippet-ubuntu-button.html` | Beide Buttons zum Einfügen in bestehende Seiten |
+| `CURSOR-DESKTOP-PROMPT.md` | Copy-Paste-Prompt für Cursor Desktop |
 
-## Deployment auf mapaluto.de
+## URLs anpassen
 
-Die Live-Seite liegt hinter **Cloudflare Access**. Dieses Repo enthält nur die HTML-Dateien – du musst sie auf deinen Webserver/Cloudflare Pages hochladen.
+In `config.js`:
 
-### Option A: Komplette Startseite ersetzen
-
-1. `index.html` auf deinen Server kopieren (z. B. als `/index.html` hinter Cloudflare Access).
-2. In Cloudflare Pages / nginx / deinem Hosting deployen.
-
-### Option B: Button in bestehende Seite einfügen
-
-Den Inhalt aus `snippet-ubuntu-button.html` in deine vorhandene HTML-Seite kopieren.
-
-## Agent-ID ändern
-
-In beiden Dateien diese URL anpassen:
-
-```text
-https://cursor.com/agents/bc-06981860-e00f-4262-a344-41c9d6c6fce1
+```javascript
+window.MAPALUTO_LINKS = {
+  ubuntuAgentUrl: "https://cursor.com/agents/bc-...",
+  ubuntuCursorDeeplink: "cursor://anysphere.cursor-deeplink/background-agent?bcId=bc-...",
+  kiloclawUrl: "https://mapaluto.de/kiloclaw",  // hier anpassen
+};
 ```
 
-Neue Agent-ID einsetzen, wenn du einen anderen Cloud-Agent nutzt.
+## Deployment
 
-## Hinweis
+1. `index.html`, `config.js` und ggf. Assets auf den Webserver hochladen.
+2. Seite liegt hinter **Cloudflare Access** – nach Login sind die Buttons sichtbar.
+3. Kiloclaw-URL prüfen: Standard ist `/kiloclaw` auf mapaluto.de.
 
-Der Button öffnet den **Cursor Agent**. Den Ubuntu-Desktop startest du danach in Cursor über **Cloud Desktop** (rechts im Panel).
+## Hinweis Ubuntu
+
+Der Ubuntu-Button öffnet den Cursor Agent. Den Desktop startest du in Cursor über **Cloud Desktop** (rechts im Panel).
