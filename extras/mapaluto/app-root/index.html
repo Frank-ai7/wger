@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>app.mapaluto.de</title>
+  <style>
+    :root { --bg:#111827; --panel:#1f2937; --border:#374151; --text:#f3f4f6; --muted:#9ca3af; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 32px 16px; }
+    h1 { margin: 0 0 8px; font-size: 1.6rem; }
+    p { color: var(--muted); margin: 0 0 24px; }
+    .cards { display: grid; gap: 12px; }
+    a.card {
+      display: block; padding: 16px 18px; text-decoration: none; color: inherit;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    }
+    a.card:hover { border-color: #3b82f6; }
+    a.card strong { display: block; margin-bottom: 4px; }
+    a.card span { color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>app.mapaluto.de</h1>
+    <p>HTTPS-Proxy für interne Dienste (Port 443, Cloudflare Access).</p>
+    <div class="cards">
+      <a class="card" href="/toms-mal-app/">
+        <strong>Tom's Mal App</strong>
+        <span>Webchat · intern Port 8080</span>
+      </a>
+      <a class="card" href="/festung/">
+        <strong>Festung / PDF</strong>
+        <span>PyMuPDF-Tools · intern Port 8765</span>
+      </a>
+      <a class="card" href="https://mapaluto.de/">
+        <strong>mapaluto.de Portal</strong>
+        <span>Zurück zum Dashboard</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

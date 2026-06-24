@@ -1,0 +1,28 @@
+{
+  "_comment": "Neue Karten für mapaluto.de Dashboard – in deine bestehende Karten-Config einfügen",
+  "sandkasten": [
+    {
+      "title": "Ubuntu starten",
+      "description": "Cursor Cloud-Sandbox · danach Cloud Desktop",
+      "url": "https://cursor.com/agents/bc-06981860-e00f-4262-a344-41c9d6c6fce1",
+      "target": "_blank",
+      "icon": "ubuntu",
+      "color": "#e95420"
+    },
+    {
+      "title": "Kiloclaw starten",
+      "description": "OpenClaw Agent · KI-Assistent (Sandkasten)",
+      "url": "/agent",
+      "icon": "robot",
+      "color": "#7c3aed",
+      "_note": "URL anpassen falls Kiloclaw woanders läuft – /kiloclaw existiert nicht"
+    }
+  ],
+  "bestehende_referenz": {
+    "agent_openclaw": {
+      "title": "Agent",
+      "description": "KI-Assistent · OpenClaw (nach Cloudflare-Login)",
+      "url": "/agent"
+    }
+  }
+}

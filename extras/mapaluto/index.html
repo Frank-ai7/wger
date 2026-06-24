@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mapaluto.de</title>
+  <script src="config.js"></script>
+  <style>
+    :root {
+      --bg: #111827;
+      --panel: #1f2937;
+      --panel-hover: #273449;
+      --border: #374151;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #3b82f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+    .status {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      padding: 12px 16px; margin-bottom: 24px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; font-size: 0.9rem; color: var(--muted);
+    }
+    .status strong { color: var(--text); }
+    h1 { margin: 0 0 8px; font-size: 1.75rem; }
+    .subtitle { color: var(--muted); margin: 0 0 24px; }
+    .section { margin-bottom: 28px; }
+    .section h2 {
+      margin: 0 0 12px; font-size: 1rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 16px; background: var(--panel);
+      border: 1px solid var(--border); border-radius: 10px;
+      text-decoration: none; color: inherit;
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+      min-height: 88px;
+    }
+    .card:hover {
+      background: var(--panel-hover);
+      border-color: #4b5563;
+      transform: translateY(-1px);
+    }
+    .card-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      display: grid; place-items: center;
+      border-radius: 8px; background: rgba(255,255,255,0.06);
+      font-size: 1.25rem;
+    }
+    .card-body { min-width: 0; }
+    .card-title { margin: 0 0 4px; font-size: 1rem; font-weight: 700; }
+    .card-desc { margin: 0; font-size: 0.85rem; color: var(--muted); }
+    .card-highlight { border-color: rgba(233, 84, 32, 0.45); }
+    .card-highlight.purple { border-color: rgba(124, 58, 237, 0.45); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>mapaluto.de</h1>
+    <p class="subtitle">Portal · Hetzner · Sandkasten · Tools</p>
+
+    <div class="status" id="status-bar">
+      <span><strong>n8n-Server</strong></span>
+      <span>CPU: —</span>
+      <span>RAM: —</span>
+      <span>Disk: —</span>
+    </div>
+
+    <div id="dashboard"></div>
+  </div>
+
+  <script>
+    (function () {
+      var links = window.MAPALUTO_LINKS || {};
+      var sections = window.MAPALUTO_CARDS || [];
+      var root = document.getElementById("dashboard");
+      if (!root) return;
+
+      function resolveUrl(card) {
+        if (card.urlKey && links[card.urlKey]) return links[card.urlKey];
+        return card.url || "#";
+      }
+
+      sections.forEach(function (section) {
+        var sec = document.createElement("section");
+        sec.className = "section";
+        sec.innerHTML = "<h2>" + section.section + "</h2>";
+        var grid = document.createElement("div");
+        grid.className = "grid";
+
+        section.cards.forEach(function (card) {
+          var a = document.createElement("a");
+          a.className = "card";
+          if (card.title === "Ubuntu starten") a.classList.add("card-highlight");
+          if (card.title === "Kiloclaw starten") a.classList.add("card-highlight", "purple");
+          a.href = resolveUrl(card);
+          if (card.external || (card.urlKey === "ubuntuAgentUrl")) {
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+          }
+          if (card.accent) a.style.borderLeft = "4px solid " + card.accent;
+
+          a.innerHTML =
+            '<div class="card-icon">' + (card.icon || "🔗") + '</div>' +
+            '<div class="card-body">' +
+              '<p class="card-title">' + card.title + '</p>' +
+              '<p class="card-desc">' + card.desc + '</p>' +
+            '</div>';
+          grid.appendChild(a);
+        });
+
+        sec.appendChild(grid);
+        root.appendChild(sec);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# In ~/.cloudflared/config.yml unter ingress: einfügen (Reihenfolge wichtig — spezifisch zuerst)
+#
+#   - hostname: app.mapaluto.de
+#     path: /toms-mal-app*
+#     service: http://127.0.0.1:8081
+#   - hostname: app.mapaluto.de
+#     path: /festung*
+#     service: http://127.0.0.1:8081
+#   - hostname: app.mapaluto.de
+#     service: http://127.0.0.1:8081
+#
+# nginx auf 8081 routet intern weiter. Danach: sudo systemctl restart cloudflared
