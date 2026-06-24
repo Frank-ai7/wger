@@ -11,7 +11,7 @@ Aufgabe: Erweitere meine Website mapaluto.de um zwei gut sichtbare Start-Buttons
 Kontext:
 - mapaluto.de ist mein persönliches Portal (hinter Cloudflare Access).
 - Ubuntu-Button: Cursor Cloud-Sandbox (Ubuntu-Desktop) – danach in Cursor „Cloud Desktop“.
-- Kiloclaw-Button: startet meinen Kiloclaw-Dienst (Standard-URL: https://mapaluto.de/kiloclaw).
+- Kiloclaw-Button: startet OpenClaw unter https://mapaluto.de/agent (NICHT /kiloclaw)
 
 Technische Anforderungen:
 1. Zwei prominente Buttons auf der Startseite / im Hero-Bereich.
@@ -19,7 +19,7 @@ Technische Anforderungen:
    https://cursor.com/agents/bc-06981860-e00f-4262-a344-41c9d6c6fce1
    → target="_blank", rel="noopener noreferrer"
 3. Kiloclaw-Link (konfigurierbar):
-   https://mapaluto.de/kiloclaw
+   https://mapaluto.de/agent
 4. Optional: Cursor-Deeplink für Ubuntu:
    cursor://anysphere.cursor-deeplink/background-agent?bcId=bc-06981860-e00f-4262-a344-41c9d6c6fce1
 5. URLs zentral in config.js (MAPALUTO_LINKS).
