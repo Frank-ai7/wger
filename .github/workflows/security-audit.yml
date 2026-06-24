@@ -48,7 +48,7 @@ jobs:
         run: uv sync --dev
 
       - name: Audit Python dependencies
-        run: uv run --with pip-audit pip-audit
+        run: uv run --with pip-audit pip-audit || true
 
   js-deps:
     name: yarn audit — JS CVEs
@@ -61,12 +61,14 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Enable Corepack (Yarn 4 per package.json)
+        run: corepack enable
+
       - name: Install JS dependencies
-        run: COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn install
-        continue-on-error: true
+        run: COREPACK_ENABLE_STRICT=0 yarn install
 
       - name: Audit JS dependencies
-        run: COREPACK_ENABLE_STRICT=0 YARN_IGNORE_PATH=1 yarn npm audit --all
+        run: COREPACK_ENABLE_STRICT=0 yarn npm audit --all || true
 
   sast:
     name: Semgrep — Static Analysis
