@@ -18,6 +18,8 @@ Statt direkter Ports diese URLs nutzen:
 
 Die Pfade existieren bereits bei Cloudflare – nach Login erreichbar.
 
+**Wichtig:** `https://app.mapaluto.de/` (Root `/`) braucht eine eigene nginx-Regel. Ohne `location = /` kommt **502 Bad Gateway** nach dem Cloudflare-Login. Nutze direkt `/toms-mal-app/` oder `/festung/`, oder setze die Root-Regel aus `nginx-app-proxy.conf`.
+
 ## OpenClaw konfigurieren
 
 In der OpenClaw-Konfiguration (Browser-/Fetch-URLs) **alle** Verweise ersetzen:
