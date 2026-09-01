@@ -13,7 +13,35 @@ Der Assistent **Jackie** empfängt Telegram-Nachrichten (Text und Sprache), nutz
 | **OpenAI** | Sprach-zu-Text (Voice) | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
 | **Google OAuth2** | Gmail, Calendar, Tasks | [Google Cloud Console](https://console.cloud.google.com/) |
 
-**Wichtig:** Telegram-Webhooks brauchen eine **öffentlich erreichbare HTTPS-URL**. Lokal geht das nur mit Tunnel (z. B. ngrok, Cloudflare Tunnel) oder du hostest n8n auf einem Server / [n8n Cloud](https://n8n.io/cloud/).
+**Wichtig:** Telegram-Webhooks brauchen eine **öffentlich erreichbare HTTPS-URL**. Das Setup-Skript startet automatisch einen **Cloudflare-Tunnel** (`setup-tunnel.sh`).
+
+## Automatisches Setup (empfohlen)
+
+Alles in einem Schritt – n8n starten, Workflow importieren, Tunnel einrichten, Owner-Account anlegen:
+
+```bash
+cd extras/n8n
+npm install
+chmod +x setup-all.sh
+./setup-all.sh
+```
+
+**Standard-Login (lokal):**
+
+| Feld | Wert |
+| --- | --- |
+| E-Mail | `admin@local.dev` |
+| Passwort | `Admin1234!` |
+
+API-Keys automatisch verbinden:
+
+```bash
+cp credentials.env.example credentials.env
+# credentials.env bearbeiten: TELEGRAM_BOT_TOKEN, OPENROUTER_API_KEY, OPENAI_API_KEY
+python3 setup-credentials.py
+```
+
+Google OAuth (Gmail, Calendar, Tasks) musst du einmalig in der n8n-Oberfläche verbinden – das geht nicht per Skript.
 
 ## Schnellstart (Docker – empfohlen)
 
@@ -128,6 +156,10 @@ Nach Änderung von `WEBHOOK_URL` n8n neu starten und Workflow erneut aktivieren.
 | `.env.example` | Umgebungsvariablen-Vorlage |
 | `import-workflow.sh` | CLI-Import (Docker oder lokales n8n) |
 | `start.sh` | n8n lokal starten (npm) |
+| `setup-all.sh` | Komplettes Setup (n8n + Workflow + Tunnel + Owner) |
+| `setup-tunnel.sh` | Cloudflare-Tunnel für Telegram-Webhooks |
+| `setup-credentials.py` | API-Keys aus `credentials.env` verbinden |
+| `credentials.env.example` | Vorlage für Telegram/OpenRouter/OpenAI Keys |
 
 ## Video-Tutorial
 
