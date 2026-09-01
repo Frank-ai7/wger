@@ -1,0 +1,13 @@
+{
+  "name": "n8n-personal-life-manager",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local n8n setup for the Personal Life Manager (Jackie) workflow",
+  "scripts": {
+    "start": "n8n start",
+    "import": "n8n import:workflow --input=workflow.json"
+  },
+  "dependencies": {
+    "n8n": "^2.8.4"
+  }
+}
